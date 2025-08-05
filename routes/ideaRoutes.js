@@ -21,7 +21,7 @@ router.get('/:id', async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id))
     throw new CustomError('Idea Not Found', 404);
 
-  const idea = await Idea.findById(req.params.id);
+  const idea = await Idea.findById(id);
 
   if (!idea) throw new CustomError('Idea Not Found', 404);
 
@@ -54,6 +54,22 @@ router.post('/', async (req, res) => {
   });
   const savedIdea = await newIdea.save();
   res.status(201).json(savedIdea);
+});
+
+// @route           DELETE /api/ideas/:id
+// @description     Delete single idea
+// @access          Public
+router.delete('/:id', async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id))
+    throw new CustomError('Idea Not Found', 404);
+
+  const idea = await Idea.findByIdAndDelete(id);
+
+  if (!idea) throw new CustomError('Idea Not Found', 404);
+
+  res.json({ message: 'Idea deleted successfully' });
 });
 
 export default router;
