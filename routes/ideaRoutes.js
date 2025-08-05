@@ -31,10 +31,29 @@ router.get('/:id', async (req, res) => {
 // @route           POST /api/ideas
 // @description     Create a new idea
 // @access          Public
-router.post('/', (req, res) => {
-  const { title, description } = req.body;
-  console.log(title);
-  res.send(description);
+router.post('/', async (req, res) => {
+  const { title, summary, description, tags } = req.body;
+  if (!title?.trim()) throw new CustomError('title is required', 400);
+  if (!summary?.trim()) throw new CustomError('summary is required', 400);
+  if (!description?.trim())
+    throw new CustomError('description is required', 400);
+
+  const newIdea = new Idea({
+    title,
+    summary,
+    description,
+    tags:
+      typeof tags === 'string'
+        ? tags
+            .split(',')
+            .map((tag) => tag.trim())
+            .filter(Boolean)
+        : Array.isArray(tags)
+        ? tags
+        : [],
+  });
+  const savedIdea = await newIdea.save();
+  res.status(201).json(savedIdea);
 });
 
 export default router;
