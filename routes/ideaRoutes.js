@@ -72,4 +72,43 @@ router.delete('/:id', async (req, res) => {
   res.json({ message: 'Idea deleted successfully' });
 });
 
+// @route           PUT /api/ideas/:id
+// @description     Edit single idea
+// @access          Public
+router.put('/:id', async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id))
+    throw new CustomError('Idea Not Found', 404);
+
+  const { title, summary, description, tags } = req.body;
+  if (!title?.trim()) throw new CustomError('title is required', 400);
+  if (!summary?.trim()) throw new CustomError('summary is required', 400);
+  if (!description?.trim())
+    throw new CustomError('description is required', 400);
+
+  const updatedIdea = await Idea.findByIdAndUpdate(
+    id,
+    {
+      title,
+      summary,
+      description,
+      tags:
+        typeof tags === 'string'
+          ? tags
+              .split(',')
+              .map((tag) => tag.trim())
+              .filter(Boolean)
+          : Array.isArray(tags)
+          ? tags
+          : [],
+    },
+    { new: true, runValidators: true }
+  );
+
+  if (!updatedIdea) throw new CustomError('Idea Not Found', 404);
+
+  res.json(updatedIdea);
+});
+
 export default router;
