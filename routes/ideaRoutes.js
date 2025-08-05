@@ -1,6 +1,9 @@
 import express from 'express';
 const router = express.Router();
 
+// @route           GET /api/ideas
+// @description     Get all ideas
+// @access          Public
 router.get('/', (req, res) => {
   const ideas = [
     { id: 1, title: 'Idea1', description: 'This is idea one' },
@@ -10,6 +13,9 @@ router.get('/', (req, res) => {
   res.json(ideas);
 });
 
+// @route           POST /api/ideas
+// @description     Create a new idea
+// @access          Public
 router.post('/', (req, res) => {
   const { title, description } = req.body;
   console.log(title);
