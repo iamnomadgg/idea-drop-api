@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import ideaRouter from './routes/ideaRoutes.js';
-import { errorHandler } from './middleware/errorHandler.js';
+import { errorHandler, CustomError } from './middleware/errorHandler.js';
 import connectDB from './config/db.js';
 
 dotenv.config();
@@ -22,8 +22,7 @@ app.use('/api/ideas', ideaRouter);
 
 //404 Fallback
 app.use((req, res) => {
-  res.status(404);
-  throw new Error(`Not Founddddd - ${req.originalUrl}`);
+  throw new CustomError(`Not Found - ${req.originalUrl}`, 404);
 });
 
 app.use(errorHandler);

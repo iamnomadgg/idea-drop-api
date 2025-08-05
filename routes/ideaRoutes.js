@@ -2,6 +2,7 @@ import express from 'express';
 const router = express.Router();
 import Idea from '../models/Idea.js';
 import mongoose from 'mongoose';
+import { CustomError } from '../middleware/errorHandler.js';
 
 // @route           GET /api/ideas
 // @description     Get all ideas
@@ -17,17 +18,12 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    res.status(404);
-    throw new Error('Idea Not Found');
-  }
+  if (!mongoose.Types.ObjectId.isValid(id))
+    throw new CustomError('Idea Not Found', 404);
 
   const idea = await Idea.findById(req.params.id);
 
-  if (!idea) {
-    res.status(404);
-    throw new Error('Idea Not Found');
-  }
+  if (!idea) throw new CustomError('Idea Not Found', 404);
 
   res.json(idea);
 });
