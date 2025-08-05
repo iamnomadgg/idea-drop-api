@@ -10,6 +10,8 @@ router.get('/', (req, res) => {
     { id: 2, title: 'Idea2', description: 'This is idea two' },
     { id: 2, title: 'Idea3', description: 'This is idea three' },
   ];
+  res.status(400);
+  throw new Error('This is an error');
   res.json(ideas);
 });
 
