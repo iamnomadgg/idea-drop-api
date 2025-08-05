@@ -21,10 +21,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/ideas', ideaRouter);
 
 //404 Fallback
-app.use((req, res, next) => {
-  const error = new Error(`Not Found - ${req.originalUrl}`);
+app.use((req, res) => {
   res.status(404);
-  next(error);
+  throw new Error(`Not Founddddd - ${req.originalUrl}`);
 });
 
 app.use(errorHandler);
