@@ -38,7 +38,7 @@ router.get('/:id', async (req, res) => {
 // @description     Create a new idea
 // @access          Public
 router.post('/', async (req, res) => {
-  const { title, summary, description, tags } = req.body;
+  const { title, summary, description, tags } = req.body || {};
   if (!title?.trim()) throw new CustomError('title is required', 400);
   if (!summary?.trim()) throw new CustomError('summary is required', 400);
   if (!description?.trim())
@@ -87,7 +87,7 @@ router.put('/:id', async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id))
     throw new CustomError('Idea Not Found', 404);
 
-  const { title, summary, description, tags } = req.body;
+  const { title, summary, description, tags } = req.body || {};
   if (!title?.trim()) throw new CustomError('title is required', 400);
   if (!summary?.trim()) throw new CustomError('summary is required', 400);
   if (!description?.trim())
