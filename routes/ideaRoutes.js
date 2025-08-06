@@ -46,6 +46,7 @@ router.post('/', protect, async (req, res) => {
     throw new CustomError('description is required', 400);
 
   const newIdea = new Idea({
+    user: req.user.id,
     title,
     summary,
     description,
