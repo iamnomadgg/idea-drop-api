@@ -46,7 +46,7 @@ router.post('/', protect, async (req, res) => {
     throw new CustomError('description is required', 400);
 
   const newIdea = new Idea({
-    user: req.user.id,
+    user: req.user._id,
     title,
     summary,
     description,
@@ -73,9 +73,14 @@ router.delete('/:id', protect, async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id))
     throw new CustomError('Idea Not Found', 404);
 
-  const idea = await Idea.findByIdAndDelete(id);
+  const idea = await Idea.findById(id);
+  if (!idea) throw new CustomError('Idea not found', 404);
 
-  if (!idea) throw new CustomError('Idea Not Found', 404);
+  //Check if user owns idea
+  if (idea.user.toString() !== req.user._id.toString())
+    throw new CustomError('Not authorized to delete this idea', 403);
+
+  await idea.deleteOne();
 
   res.json({ message: 'Idea deleted successfully' });
 });
