@@ -3,6 +3,7 @@ const router = express.Router();
 import Idea from '../models/Idea.js';
 import mongoose from 'mongoose';
 import { CustomError } from '../middleware/errorHandler.js';
+import { protect } from '../middleware/authMiddleware.js';
 
 // @route           GET /api/ideas
 // @description     Get all ideas
@@ -36,8 +37,8 @@ router.get('/:id', async (req, res) => {
 
 // @route           POST /api/ideas
 // @description     Create a new idea
-// @access          Public
-router.post('/', async (req, res) => {
+// @access          Protected
+router.post('/', protect, async (req, res) => {
   const { title, summary, description, tags } = req.body || {};
   if (!title?.trim()) throw new CustomError('title is required', 400);
   if (!summary?.trim()) throw new CustomError('summary is required', 400);
@@ -64,8 +65,8 @@ router.post('/', async (req, res) => {
 
 // @route           DELETE /api/ideas/:id
 // @description     Delete single idea
-// @access          Public
-router.delete('/:id', async (req, res) => {
+// @access          Protected
+router.delete('/:id', protect, async (req, res) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id))
@@ -80,8 +81,8 @@ router.delete('/:id', async (req, res) => {
 
 // @route           PUT /api/ideas/:id
 // @description     Edit single idea
-// @access          Public
-router.put('/:id', async (req, res) => {
+// @access          Protected
+router.put('/:id', protect, async (req, res) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id))

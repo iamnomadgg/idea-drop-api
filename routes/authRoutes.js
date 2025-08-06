@@ -11,9 +11,9 @@ const router = express.Router();
 // @description Register new user
 // @access      Public
 router.post('/register', async (req, res) => {
-  if (!req.body?.name?.trim()) throw new CustomError('name is required', 400);
-  if (!req.body?.email?.trim()) throw new CustomError('email is required', 400);
-  if (!req.body?.password) throw new CustomError('password is required', 400);
+  const { name, email, password } = req.body || {};
+  if (!name || !email || !password)
+    throw new CustomError('name, email and password are required', 400);
 
   const existingUser = await User.findOne({ email });
   if (existingUser) throw new CustomError('User already exists', 400);
@@ -51,8 +51,9 @@ router.post('/register', async (req, res) => {
 // @description Authenticate user
 // @access      Public
 router.post('/login', async (req, res) => {
-  if (!req.body?.email?.trim()) throw new CustomError('email is required', 400);
-  if (!req.body?.password) throw new CustomError('password is required', 400);
+  const { email, password } = req.body || {};
+  if (!email || !password)
+    throw new CustomError('email and password are required', 400);
 
   //Find user
   const user = await User.findOne({ email });
