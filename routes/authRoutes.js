@@ -33,7 +33,8 @@ router.post('/register', async (req, res) => {
     // then "sameSite" can be set as "lax" to make the app a bit more secure.
     //To make frontend and backend stored on the same domain,
     // a proxy can be created on vercel.
-    sameSite: 'none',
+    //if secure is false and sameSite is set to none, the refreshToken won't be set.
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     maxAge: 30 * 24 * 60 * 60 * 1000, //30 days
   });
 
@@ -76,7 +77,8 @@ router.post('/login', async (req, res) => {
     // then "sameSite" can be set as "lax" to make the app a bit more secure.
     //To make frontend and backend stored on the same domain,
     // a proxy can be created on vercel.
-    sameSite: 'none',
+    //if secure is false and sameSite is set to none, the refreshToken won't be set.
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     maxAge: 30 * 24 * 60 * 60 * 1000, //30 days
   });
 
@@ -97,7 +99,7 @@ router.post('/logout', (req, res) => {
   res.clearCookie('refreshToken', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'none',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
   });
 
   res.status(200).json({ message: 'Logged out successfully' });
