@@ -16,10 +16,7 @@ const PORT = process.env.PORT || 8000;
 connectDB();
 
 //CORS Config
-const allowedOrigins = [
-  'http://localhost:3000',
-  'https://idea-drop-api-q9a6.onrender.com',
-];
+const allowedOrigins = ['http://localhost:3000'];
 
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json());
