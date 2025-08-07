@@ -94,30 +94,33 @@ router.put('/:id', protect, async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id))
     throw new CustomError('Idea Not Found', 404);
 
+  const idea = await Idea.findById(id);
+  if (!idea) throw new CustomError('Idea not found', 404);
+
+  //Check if user owns idea
+  if (idea.user.toString() !== req.user._id.toString())
+    throw new CustomError('Not authorized to update this idea', 403);
+
   const { title, summary, description, tags } = req.body || {};
+
   if (!title?.trim()) throw new CustomError('title is required', 400);
   if (!summary?.trim()) throw new CustomError('summary is required', 400);
   if (!description?.trim())
     throw new CustomError('description is required', 400);
 
-  const updatedIdea = await Idea.findByIdAndUpdate(
-    id,
-    {
-      title,
-      summary,
-      description,
-      tags:
-        typeof tags === 'string'
-          ? tags
-              .split(',')
-              .map((tag) => tag.trim())
-              .filter(Boolean)
-          : Array.isArray(tags)
-          ? tags
-          : [],
-    },
-    { new: true, runValidators: true }
-  );
+  idea.title = title;
+  idea.summary = summary;
+  idea.description = description;
+  idea.tags =
+    typeof tags === 'string'
+      ? tags
+          .split(',')
+          .map((tag) => tag.trim())
+          .filter(Boolean)
+      : Array.isArray(tags)
+      ? tags
+      : [];
+  const updatedIdea = await idea.save();
 
   if (!updatedIdea) throw new CustomError('Idea Not Found', 404);
 
