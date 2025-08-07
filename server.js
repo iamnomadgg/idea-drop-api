@@ -18,7 +18,7 @@ connectDB();
 //CORS Config
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://idea-drop-ui.vercel.app/',
+  'https://idea-drop-ui.vercel.app',
 ];
 
 app.use(cors({ origin: allowedOrigins, credentials: true }));
